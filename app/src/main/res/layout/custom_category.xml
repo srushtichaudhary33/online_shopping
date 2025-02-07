@@ -5,6 +5,7 @@
     app:cardCornerRadius="@dimen/_5sdp"
     app:cardElevation="@dimen/_3sdp"
     android:layout_marginVertical="@dimen/_5sdp"
+    app:cardBackgroundColor="@color/color_light_red"
     android:layout_marginHorizontal="@dimen/_10sdp"
     android:layout_height="wrap_content">
 

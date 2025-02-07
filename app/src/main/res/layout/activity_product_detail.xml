@@ -47,7 +47,22 @@
             <LinearLayout
 
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" >
+                
+                <ImageView
+                    android:src="@drawable/whishlist_blank"
+                    android:padding="@dimen/_2sdp"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"/>
+
+                <ImageView
+                    android:src="@drawable/whishlist_fill"
+                    android:padding="@dimen/_2sdp"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"/>
+                
+                
+            </LinearLayout>
 
             <Button
                 android:layout_marginTop="@dimen/_10sdp"

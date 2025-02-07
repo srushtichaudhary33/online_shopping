@@ -41,6 +41,9 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
 
