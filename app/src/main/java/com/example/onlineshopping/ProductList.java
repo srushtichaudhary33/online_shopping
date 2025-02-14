@@ -4,6 +4,15 @@ public class ProductList {
 
     int image;
     String id,subCatId,name,price,Desc;
+    boolean isWishlist;
+
+    public int getImage() {
+        return image;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
+    }
 
     public String getId() {
         return id;
@@ -19,14 +28,6 @@ public class ProductList {
 
     public void setSubCatId(String subCatId) {
         this.subCatId = subCatId;
-    }
-
-    public int getImage() {
-        return image;
-    }
-
-    public void setImage(int image) {
-        this.image = image;
     }
 
     public String getName() {
@@ -51,5 +52,13 @@ public class ProductList {
 
     public void setDesc(String desc) {
         Desc = desc;
+    }
+
+    public boolean isWishlist() {
+        return isWishlist;
+    }
+
+    public void setWishlist(boolean wishlist) {
+        isWishlist = wishlist;
     }
 }
