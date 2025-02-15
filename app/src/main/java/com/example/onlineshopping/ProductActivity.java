@@ -31,45 +31,37 @@ public class ProductActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
-        sp = getSharedPreferences(ConstantSp.PREF, MODE_PRIVATE);
 
-        // Open database
-        db = openOrCreateDatabase("AndroidOnlineShopping.db", MODE_PRIVATE, null);
+        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
 
-        // Create tables if they don't exist
-        db.execSQL("CREATE TABLE IF NOT EXISTS USERS(USERID INTEGER PRIMARY KEY AUTOINCREMENT, " + "NAME TEXT, EMAIL TEXT, CONTACT INTEGER, PASSWORD TEXT)");
+        db = openOrCreateDatabase("AndroidInternshipJune.db",MODE_PRIVATE,null);
+        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS(USERID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(50),EMAIL VARCHAR(50),CONTACT BIGINT(10),PASSWORD VARCHAR(20))";
+        db.execSQL(tableQuery);
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS CATEGORY(CATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT, " + "NAME TEXT, IMAGE TEXT)");
+        String categoryQuery = "CREATE TABLE IF NOT EXISTS CATEGORY(CATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(50),IMAGE VARCHAR(100))";
+        db.execSQL(categoryQuery);
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS SUBCATEGORY(SUBCATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT, " + "CATEGORYID INTEGER, NAME TEXT, IMAGE TEXT)");
+        String subCategoryQuery = "CREATE TABLE IF NOT EXISTS SUBCATEGORY(SUBCATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORYID VARCHAR(10),NAME VARCHAR(50),IMAGE VARCHAR(100))";
+        db.execSQL(subCategoryQuery);
 
-        String productQuery = "CREATE TABLE IF NOT EXISTS PRODUCT(PRODUCTID INTEGER PRIMARY KEY AUTOINCREMENT, SUBCATEGORYID VARCHAR(10), NAME VARCHAR(50), PRICE VARCHAR(20), IMAGE VARCHAR(100), DESCRIPTION TEXT)";
+        String productQuery = "CREATE TABLE IF NOT EXISTS PRODUCT(PRODUCTID INTEGER PRIMARY KEY AUTOINCREMENT,SUBCATEGORYID VARCHAR(10),NAME VARCHAR(50),PRICE VARCHAR(20),IMAGE VARCHAR(100),DESCRIPTION TEXT)";
         db.execSQL(productQuery);
 
-        String wishlistQuery = "CREATE TABLE IF NOT EXISTS WISHLIST(WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT, USERID INTEGER(10), PRODUCTID INTEGER(10))";
+        String wishlistQuery = "CREATE TABLE IF NOT EXISTS WISHLIST(WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT,USERID INTEGER(10),PRODUCTID INTEGER(10))";
         db.execSQL(wishlistQuery);
 
+        String cartQuery = "CREATE TABLE IF NOT EXISTS CART(CARTID INTEGER PRIMARY KEY AUTOINCREMENT,ORDERID INTEGER(10),USERID INTEGER(10),PRODUCTID INTEGER(10),QTY INTEGER(3),PRICE VARCHAR(10),TOTALPRICE VARCHAR(10))";
+        db.execSQL(cartQuery);
 
         recyclerView = findViewById(R.id.product_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(ProductActivity.this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        for (int i = 0; i < idArray.length; i++) {
-            String selectProdQuery = "SELECT * FROM PRODUCT WHERE NAME='" + nameArray[i] + "' AND SUBCATEGORYID='" + subCatIdArray[i] + "'";
-            Cursor cursor = db.rawQuery(selectProdQuery, null);
-            if (cursor.getCount() > 0) {
-
-            } else {
-                String insertQuery = "INSERT INTO PRODUCT VALUES(NULL,'" + subCatIdArray[i] + "','" + nameArray[i] + "','" + priceArray[i] + "','" + imageArray[i] + "','" + descArray[i] + "')";
-                db.execSQL(insertQuery);
-            }
-        }
-
-        String selectQuery = "SELECT * FROM PRODUCT WHERE SUBCATEGORYID='" + sp.getString(ConstantSp.SUBCATEGORYID, "") + "'";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        if (cursor.getCount() > 0) {
+        String selectQuery = "SELECT * FROM PRODUCT WHERE SUBCATEGORYID='"+sp.getString(ConstantSp.SUBCATEGORYID,"")+"'";
+        Cursor cursor = db.rawQuery(selectQuery,null);
+        if(cursor.getCount()>0){
             arrayList = new ArrayList<>();
-            while (cursor.moveToNext()) {
+            while (cursor.moveToNext()){
                 ProductList list = new ProductList();
                 list.setId(cursor.getString(0));
                 list.setSubCatId(cursor.getString(1));
@@ -79,35 +71,46 @@ public class ProductActivity extends AppCompatActivity {
                 list.setDesc(cursor.getString(5));
                 String wishlistSelectQuery = "SELECT * FROM WISHLIST WHERE PRODUCTID='"+cursor.getString(0)+"' AND USERID='"+sp.getString(ConstantSp.USERID,"")+"'";
                 Cursor wishCursor = db.rawQuery(wishlistSelectQuery,null);
-                if (wishCursor.getCount()>0){
+                if(wishCursor.getCount()>0){
                     list.setWishlist(true);
                 }
                 else {
                     list.setWishlist(false);
                 }
-                arrayList.add(list);
 
+                String cartSelectQuery = "SELECT * FROM CART WHERE PRODUCTID='"+cursor.getString(0)+"' AND USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND ORDERID='0'";
+                Cursor cartCursor = db.rawQuery(cartSelectQuery,null);
+                if(cartCursor.getCount()>0){
+                    while (cartCursor.moveToNext()){
+                        list.setCartId(cartCursor.getString(0));
+                        list.setQty(Integer.parseInt(cartCursor.getString(4)));
+                    }
+                }
+                else{
+                    list.setCartId("0");
+                    list.setQty(0);
+                }
+
+                arrayList.add(list);
             }
-            ProductAdapter adapter = new ProductAdapter(ProductActivity.this, arrayList,db);
+            ProductAdapter adapter = new ProductAdapter(ProductActivity.this,arrayList,db);
             recyclerView.setAdapter(adapter);
         }
 
-//        arrayList = new ArrayList<>();
-//        for (int i=0;i<idArray.length;i++){
-//            if (Integer.parseInt(sp.getString(ConstantSp.SUBCATEGORYID,"")) == subCatIdArray[i]) {
-//                Log.d("RESPONSE",idArray.length+"\n"+subCatIdArray.length+"\n"+nameArray.length+"\n"+priceArray.length+"\n"+imageArray.length+"\n"+descArray.length);
-//                ProductList list = new ProductList();
-//                list.setId(idArray[i]);
-//                list.setSubCatId(subCatIdArray[i]);
-//                list.setName(nameArray[i]);
-//                list.setPrice(priceArray[i]);
-//                list.setImage(imageArray[i]);
-//                list.setDesc(descArray[i]);
-//                arrayList.add(list);
-//            }
-//        }
-//        ProductAdapter adapter = new ProductAdapter(ProductActivity.this,arrayList);
-//        recyclerView.setAdapter(adapter);
-
+        /*arrayList = new ArrayList<>();
+        for(int i=0;i<idArray.length;i++){
+            if(Integer.parseInt(sp.getString(ConstantSp.SUBCATEGORYID,"")) == subCatIdArray[i]) {
+                ProductList list = new ProductList();
+                list.setId(idArray[i]);
+                list.setSubCatId(subCatIdArray[i]);
+                list.setName(nameArray[i]);
+                list.setPrice(priceArray[i]);
+                list.setImage(imageArray[i]);
+                list.setDesc(descArray[i]);
+                arrayList.add(list);
+            }
+        }
+        ProductAdapter adapter = new ProductAdapter(ProductActivity.this,arrayList);
+        recyclerView.setAdapter(adapter);*/
     }
 }
