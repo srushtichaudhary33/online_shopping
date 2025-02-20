@@ -19,7 +19,7 @@ public class CategoryActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     int[] idArray = {1,2,3,4,5,6,7};
-    String[] nameArray = {"beauty", "jewellery", "shoes", "watch" , "western", "croptop","menstshirt"};
+    String[] nameArray = {"Beauty", "Jewellery", "Shoes", "Watch" , "Western", "Croptop","Menstshirt"};
     int[] imageArray = {R.drawable.beauty, R.drawable.jewellery, R.drawable.shoes, R.drawable.watch, R.drawable.western, R.drawable.croptop, R.drawable.menstshirt};
 
     ArrayList<CategoryList> arrayList;

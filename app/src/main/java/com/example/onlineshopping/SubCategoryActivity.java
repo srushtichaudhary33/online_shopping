@@ -18,8 +18,8 @@ public class SubCategoryActivity extends AppCompatActivity {
 
     int[] idArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
     int[] categoryIdArray = {1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7};
-    String[] nameArray = {"lakme", "nykaa", "maybelline", "sephora", "oxidised", "silver", "gold",
-            "canvas", "adidas", "nike", "rolex", "titan", "fastrack", "raymond", "H & M", "zara", "allensolly"};
+    String[] nameArray = {"Lakme", "Nykaa", "Maybelline", "Sephora", "Oxidised", "Silver", "Gold",
+            "Canvas", "Adidas", "Nike", "Rolex", "Titan", "Fastrack", "Raymond", "H & M", "Zara", "Allensolly"};
     int[] imageArray = {R.drawable.lakme, R.drawable.nykaa, R.drawable.maybelline, R.drawable.sephora,
             R.drawable.oxidised, R.drawable.silver, R.drawable.gold, R.drawable.canvas, R.drawable.adidas,
             R.drawable.nike, R.drawable.rolex, R.drawable.titan, R.drawable.fastrack, R.drawable.raymond,
