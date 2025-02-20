@@ -35,58 +35,46 @@ public class SubCategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub_category);
 
-        // Initialize SharedPreferences
-        sp = getSharedPreferences(ConstantSp.PREF, MODE_PRIVATE);
-        String categoryId = sp.getString(ConstantSp.CATEGORYID, "");
+        db = openOrCreateDatabase("AndroidOnlineShopping.db",MODE_PRIVATE,null);
+        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS(USERID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(50),EMAIL VARCHAR(50),CONTACT BIGINT(10),PASSWORD VARCHAR(20))";
+        db.execSQL(tableQuery);
 
-        // Validate CATEGORYID
-        if (categoryId == null || categoryId.isEmpty()) {
-            // Handle missing CATEGORYID case
-            return;
-        }
+        String categoryQuery = "CREATE TABLE IF NOT EXISTS CATEGORY(CATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(50),IMAGE VARCHAR(100))";
+        db.execSQL(categoryQuery);
 
-        // Open database
-        db = openOrCreateDatabase("AndroidOnlineShopping.db", MODE_PRIVATE, null);
+        String subCategoryQuery = "CREATE TABLE IF NOT EXISTS SUBCATEGORY(SUBCATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORYID VARCHAR(10),NAME VARCHAR(50),IMAGE VARCHAR(100))";
+        db.execSQL(subCategoryQuery);
 
-        // Create tables if they don't exist
-        db.execSQL("CREATE TABLE IF NOT EXISTS SUBCATEGORY(SUBCATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "CATEGORYID INTEGER, NAME TEXT, IMAGE INTEGER)");
+        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
 
-        // Setup RecyclerView
         recyclerView = findViewById(R.id.sub_category_recyclerview);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        // Insert subcategories if not exists
-        for (int i = 0; i < idArray.length; i++) {
-            Cursor cursor = db.rawQuery("SELECT * FROM SUBCATEGORY WHERE CATEGORYID = ? AND NAME = ?",
-                    new String[]{String.valueOf(categoryIdArray[i]), nameArray[i]});
-
-            if (!cursor.moveToFirst()) {
-                db.execSQL("INSERT INTO SUBCATEGORY (CATEGORYID, NAME, IMAGE) VALUES (?, ?, ?)",
-                        new Object[]{categoryIdArray[i], nameArray[i], imageArray[i]});
-            }
-            cursor.close();
-        }
-
-        // Fetch subcategories from database
-        Cursor cursor = db.rawQuery("SELECT * FROM SUBCATEGORY WHERE CATEGORYID = ?", new String[]{categoryId});
-
-        if (cursor.getCount() > 0) {
+        String selectQuery = "SELECT * FROM SUBCATEGORY WHERE CATEGORYID='"+sp.getString(ConstantSp.CATEGORYID,"")+"'";
+        Cursor cursor = db.rawQuery(selectQuery,null);
+        if(cursor.getCount()>0){
             arrayList = new ArrayList<>();
-            while (cursor.moveToNext()) {
+            while (cursor.moveToNext()){
                 SubCategoryList list = new SubCategoryList();
                 list.setId(cursor.getString(0));
                 list.setCategoryId(cursor.getString(1));
                 list.setName(cursor.getString(2));
-                list.setImage(cursor.getInt(3));
+                list.setImage(Integer.parseInt(cursor.getString(3)));
                 arrayList.add(list);
             }
-            cursor.close();
-
-            // Set adapter
-            SubCategoryAdapter adapter = new SubCategoryAdapter(this, arrayList);
+            SubCategoryAdapter adapter = new SubCategoryAdapter(SubCategoryActivity.this,arrayList);
             recyclerView.setAdapter(adapter);
         }
+
+        /*arrayList = new ArrayList<>();
+        if(Integer.parseInt(sp.getString(ConstantSp.CATEGORYID,"")) == categoryIdArray[i]) {
+                SubCategoryList list = new SubCategoryList();
+                list.setId(idArray[i]);
+                list.setCategoryId(categoryIdArray[i]);
+                list.setName(nameArray[i]);
+                list.setImage(imageArray[i]);
+                arrayList.add(list);
+            }*/
     }
 }

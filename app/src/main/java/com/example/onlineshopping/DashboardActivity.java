@@ -19,7 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class DashboardActivity extends AppCompatActivity {
 
     TextView welcome;
-    Button profile, delete, logout, category, wishlist, cart ;
+    Button profile, delete, logout, category, wishlist, cart, myorder ;
 
     SharedPreferences sp;
     SQLiteDatabase db;
@@ -44,6 +44,15 @@ public class DashboardActivity extends AppCompatActivity {
         cart = findViewById(R.id.dashboard_cart);
         delete = findViewById(R.id.dashboard_delete_profile);
         logout = findViewById(R.id.dashboard_logout);
+
+        myorder = findViewById(R.id.dashboard_orders);
+        myorder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this, MyOrderActivity.class);
+                startActivity(intent);
+            }
+        });
 
         cart.setOnClickListener(new View.OnClickListener() {
             @Override

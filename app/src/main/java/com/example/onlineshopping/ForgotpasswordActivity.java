@@ -27,7 +27,7 @@ public class ForgotpasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgotpassword);
 
-        db = openOrCreateDatabase("AndroidASOIT.db", MODE_PRIVATE, null);
+        db = openOrCreateDatabase("AndroidOnlineShopping.db", MODE_PRIVATE, null);
         String tableQuery = "CREATE TABLE IF NOT EXISTS USERS(USERID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(50), EMAIL VARCHAR(50), CONTACT BIGINT(10), PASSWORD VARCHAR(20))";
         db.execSQL(tableQuery);
 
