@@ -57,6 +57,19 @@ public class ProductActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(ProductActivity.this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        // PRODUCT Table માં data insert કરો જો તે પહેલાથી હાજર ના હોય
+        for (int i = 0; i < idArray.length; i++) {
+            String selectQuery = "SELECT * FROM PRODUCT WHERE NAME = ?";
+            Cursor cursor = db.rawQuery(selectQuery, new String[]{nameArray[i]});
+
+            if (cursor.getCount() == 0) { // જો પ્રોડક્ટ હાજર ન હોય તો જ એડ કરો
+                String insertQuery = "INSERT INTO PRODUCT (SUBCATEGORYID, NAME, PRICE, IMAGE, DESCRIPTION) VALUES (?, ?, ?, ?, ?)";
+                db.execSQL(insertQuery, new Object[]{subCatIdArray[i], nameArray[i], priceArray[i], imageArray[i], descArray[i]});
+            }
+            cursor.close();
+        }
+
+
         String selectQuery = "SELECT * FROM PRODUCT WHERE SUBCATEGORYID='"+sp.getString(ConstantSp.SUBCATEGORYID,"")+"'";
         Cursor cursor = db.rawQuery(selectQuery,null);
         if(cursor.getCount()>0){

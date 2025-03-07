@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +36,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHold
         this.context = context;
         this.arrayList = arrayList;
         sp = context.getSharedPreferences(ConstantSp.PREF,Context.MODE_PRIVATE);
+        Log.d("ADAPTER_DEBUG", String.valueOf(arrayList.size()));
+
     }
 
     @NonNull
@@ -60,6 +63,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHold
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         holder.imageView.setImageResource(arrayList.get(position).getImage());
         holder.name.setText(arrayList.get(position).getName());
+        Log.d("ADAPTER_DEBUG", "Image ID: " + arrayList.get(position).getImage());
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

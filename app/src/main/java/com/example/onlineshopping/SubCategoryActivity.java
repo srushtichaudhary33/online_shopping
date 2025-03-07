@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -46,26 +47,66 @@ public class SubCategoryActivity extends AppCompatActivity {
         db.execSQL(subCategoryQuery);
 
         sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
+        int categoryId = Integer.parseInt(sp.getString(ConstantSp.CATEGORYID, "0"));
 
         recyclerView = findViewById(R.id.sub_category_recyclerview);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        String selectQuery = "SELECT * FROM SUBCATEGORY WHERE CATEGORYID='"+sp.getString(ConstantSp.CATEGORYID,"")+"'";
-        Cursor cursor = db.rawQuery(selectQuery,null);
-        if(cursor.getCount()>0){
-            arrayList = new ArrayList<>();
-            while (cursor.moveToNext()){
+//        String selectQuery = "SELECT * FROM SUBCATEGORY WHERE CATEGORYID='"+sp.getString(ConstantSp.CATEGORYID,"")+"'";
+//
+//
+//        Cursor cursor = db.rawQuery(selectQuery,null);
+//        arrayList = new ArrayList<>();
+//        if(cursor.getCount()>0){
+//            while (cursor.moveToNext()){
+//                SubCategoryList list = new SubCategoryList();
+//                list.setId(cursor.getString(0));
+//                list.setCategoryId(cursor.getString(1));
+//                list.setName(cursor.getString(2));
+//                list.setImage(Integer.parseInt(cursor.getString(3)));
+//                arrayList.add(list);
+//            }
+//            Log.d("SUBCATEGORY_DEBUG", String.valueOf(arrayList.size()));
+//            SubCategoryAdapter adapter = new SubCategoryAdapter(SubCategoryActivity.this,arrayList);
+//            recyclerView.setAdapter(adapter);
+//        }
+
+
+        // SUBCATEGORY Table માં data insert કરો જો તે પહેલેથી ના હોય
+        for (int i = 0; i < idArray.length; i++) {
+            String selectQuery = "SELECT * FROM SUBCATEGORY WHERE NAME = ?";
+            Cursor cursor = db.rawQuery(selectQuery, new String[]{nameArray[i]});
+
+            if (cursor.getCount() == 0) { // Only insert if not exists
+                String insertQuery = "INSERT INTO SUBCATEGORY (CATEGORYID, NAME, IMAGE) VALUES (?, ?, ?)";
+                db.execSQL(insertQuery, new Object[]{categoryIdArray[i], nameArray[i], imageArray[i]});
+            }
+            cursor.close();
+        }
+
+
+        arrayList = new ArrayList<>(); // Ensure arrayList is initialized
+
+        String selectQuery = "SELECT * FROM SUBCATEGORY WHERE CATEGORYID=" + categoryId;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("CURSOR_COUNT", String.valueOf(cursor.getCount()));
+        Log.d("SUBCATEGORY_DEBUG", String.valueOf(categoryId));
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
                 SubCategoryList list = new SubCategoryList();
                 list.setId(cursor.getString(0));
                 list.setCategoryId(cursor.getString(1));
                 list.setName(cursor.getString(2));
-                list.setImage(Integer.parseInt(cursor.getString(3)));
+                list.setImage(cursor.getInt(3)); // Ensure correct integer retrieval
                 arrayList.add(list);
             }
-            SubCategoryAdapter adapter = new SubCategoryAdapter(SubCategoryActivity.this,arrayList);
-            recyclerView.setAdapter(adapter);
         }
+
+        Log.d("SUBCATEGORY_DEBUG", "Size: " + arrayList.size());
+        SubCategoryAdapter adapter = new SubCategoryAdapter(SubCategoryActivity.this, arrayList);
+        recyclerView.setAdapter(adapter);
+
 
         /*arrayList = new ArrayList<>();
         if(Integer.parseInt(sp.getString(ConstantSp.CATEGORYID,"")) == categoryIdArray[i]) {

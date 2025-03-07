@@ -3,6 +3,7 @@ package com.example.onlineshopping;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
         this.context = context;
         this.arrayList = arrayList;
         sp = context.getSharedPreferences(ConstantSp.PREF,Context.MODE_PRIVATE);
+        Log.d("SUBCATEGORY_DEBUG", String.valueOf(arrayList.size()));
 
     }
 
