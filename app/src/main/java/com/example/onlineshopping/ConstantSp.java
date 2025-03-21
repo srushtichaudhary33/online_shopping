@@ -2,6 +2,12 @@ package com.example.onlineshopping;
 
 public class ConstantSp {
 
+        public static final String BASE_URL = "http:// 192.168.207.189/online_shopping_api/";
+        public static final String SIGNUP_URL = BASE_URL+"signup.php";
+        public static final String LOGIN_URL = BASE_URL+"login.php";
+        public static final String UPDATE_PROFILE_URL = BASE_URL+"update_profile.php";
+        public static final String DELETE_PROFILE_URL = BASE_URL+"delete_profile.php";
+
         public static final String PREF = "pref";
 
         public static final String USERID = "userid";

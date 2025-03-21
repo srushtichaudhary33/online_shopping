@@ -42,6 +42,15 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'com.razorpay:checkout:1.6.38'
     implementation 'com.google.android.material:material:1.10.0'
+
+    implementation libs.retrofit
+    implementation libs.gson
+    implementation libs.convertor.gson
+    implementation libs.lifecycle.livedata.ktx
+    implementation libs.lifecycle.viewmodel.ktx
+    implementation libs.navigation.fragment
+    implementation libs.navigation.ui
+
     implementation libs.firebase.firestore
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

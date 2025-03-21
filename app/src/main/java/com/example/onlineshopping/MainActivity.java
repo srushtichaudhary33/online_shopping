@@ -1,10 +1,13 @@
 package com.example.onlineshopping;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,39 +92,130 @@ public class MainActivity extends AppCompatActivity {
                 } else if (password.getText().toString().trim().length() < 6) {
                     password.setError("Min. 6 Char Password Required");
                 } else {
-                    // Check credentials in the database
-                    String selectQuery = "SELECT * FROM USERS WHERE (EMAIL = '" + email.getText().toString() + "' OR CONTACT = '" + email.getText().toString() + "') AND PASSWORD = '" + password.getText().toString() + "'";
-                    Cursor cursor = db.rawQuery(selectQuery, null);
-
-                    if (cursor.moveToFirst()) {
-                        // Get user details
-                        String userId = cursor.getString(cursor.getColumnIndexOrThrow("USERID"));
-                        String userName = cursor.getString(cursor.getColumnIndexOrThrow("NAME"));
-                        String userEmail = cursor.getString(cursor.getColumnIndexOrThrow("EMAIL"));
-                        String userContact = cursor.getString(cursor.getColumnIndexOrThrow("CONTACT"));
-
-                        // Save user session in SharedPreferences
-                        sp.edit().putString(ConstantSp.USERID, userId).apply();
-                        sp.edit().putString(ConstantSp.NAME, userName).apply();
-                        sp.edit().putString(ConstantSp.EMAIL, userEmail).apply();
-                        sp.edit().putString(ConstantSp.CONTACT, userContact).apply();
-
-                        // Display success message
-                        Toast.makeText(MainActivity.this, "Welcome, " + userName + "!", Toast.LENGTH_SHORT).show();
-
-                        // Navigate to dashboard
-                        Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        // Login failed
-                        Toast.makeText(MainActivity.this, "Invalid Email/Password", Toast.LENGTH_SHORT).show();
+                    //doLoginSqlite(view);
+                    if(new ConnectionDetector(MainActivity.this).networkConnected()){
+                        //new doLogin().execute();
+                        pd = new ProgressDialog(MainActivity.this);
+                        pd.setMessage("Please Wait...");
+                        pd.setCancelable(false);
+                        pd.show();
+                        doLoginRetrofit();
                     }
-
-                    // Close the cursor
-                    cursor.close();
+                    else{
+                        new ConnectionDetector(MainActivity.this).networkDisconnected();
+                    }
                 }
             }
         });
+
+    }
+
+    private void doLoginRetrofit() {
+        Call<GetLoginData> call = apiInterface.doLoginData(email.getText().toString(),password.getText().toString());
+        call.enqueue(new Callback<GetLoginData>() {
+            @Override
+            public void onResponse(Call<GetLoginData> call, Response<GetLoginData> response) {
+                pd.dismiss();
+                if(response.code()==200){
+                    if(response.body().status){
+                        Toast.makeText(MainActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        for(int i=0;i<response.body().userDetails.size();i++){
+                            sp.edit().putString(ConstantSp.USERID,response.body().userDetails.get(i).userid).commit();
+                            sp.edit().putString(ConstantSp.NAME,response.body().userDetails.get(i).name).commit();
+                            sp.edit().putString(ConstantSp.EMAIL,response.body().userDetails.get(i).email).commit();
+                            sp.edit().putString(ConstantSp.CONTACT,response.body().userDetails.get(i).contact).commit();
+                            sp.edit().putString(ConstantSp.PASSWORD,"").commit();
+                        }
+                        Intent intent = new Intent(MainActivity.this,DashboardActivity.class);
+                        startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "Serever Error Code : "+response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetLoginData> call, Throwable t) {
+                pd.dismiss();
+                Log.d("RESPONSE_ERROR",t.getMessage());
+            }
+        });
+    }
+
+    private void doLoginSqlite(View view) {
+        String selectQuery = "SELECT * FROM USERS WHERE (EMAIL='"+email.getText().toString()+"' OR CONTACT='"+email.getText().toString()+"') AND PASSWORD='"+password.getText().toString()+"'";
+        Cursor cursor = db.rawQuery(selectQuery,null);
+        if(cursor.getCount()>0){
+            while (cursor.moveToNext()){
+                sp.edit().putString(ConstantSp.USERID,cursor.getString(0)).commit();
+                sp.edit().putString(ConstantSp.NAME,cursor.getString(1)).commit();
+                sp.edit().putString(ConstantSp.EMAIL,cursor.getString(2)).commit();
+                sp.edit().putString(ConstantSp.CONTACT,cursor.getString(3)).commit();
+                sp.edit().putString(ConstantSp.PASSWORD,cursor.getString(4)).commit();
+            }
+
+            System.out.println("Login Successfully");
+            Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+            Snackbar.make(view, "Login Successfully", Snackbar.LENGTH_LONG).show();
+            Intent intent = new Intent(MainActivity.this,DashboardActivity.class);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(MainActivity.this, "Invalid Email Id/Password", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private class doLogin extends AsyncTask<String,String,String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(MainActivity.this);
+            pd.setMessage("Please Wait...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            HashMap<String,String> hashMap = new HashMap<>();
+            hashMap.put("email",email.getText().toString());
+            hashMap.put("password",password.getText().toString());
+            return new MakeServiceCall().MakeServiceCall(ConstantSp.LOGIN_URL,MakeServiceCall.POST,hashMap);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pd.dismiss();
+            try {
+                JSONObject object = new JSONObject(s);
+                if(object.getBoolean("status")){
+                    Toast.makeText(MainActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                    JSONArray array = object.getJSONArray("UserDetails");
+                    for(int i=0; i<array.length();i++){
+                        JSONObject jsonObject = array.getJSONObject(i);
+                        sp.edit().putString(ConstantSp.USERID,jsonObject.getString("userid")).commit();
+                        sp.edit().putString(ConstantSp.NAME,jsonObject.getString("name")).commit();
+                        sp.edit().putString(ConstantSp.EMAIL,jsonObject.getString("email")).commit();
+                        sp.edit().putString(ConstantSp.CONTACT,jsonObject.getString("contact")).commit();
+                        sp.edit().putString(ConstantSp.PASSWORD,"").commit();
+                    }
+                    Intent intent = new Intent(MainActivity.this,DashboardActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(MainActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
