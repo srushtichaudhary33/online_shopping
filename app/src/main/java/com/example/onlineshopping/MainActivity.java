@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         email = findViewById(R.id.main_email);
         password = findViewById(R.id.main_password);
 
-        hideIv = findViewById(R.id.main_password_hide);
-        showIv = findViewById(R.id.main_password_show);
+        //hideIv = findViewById(R.id.main_password_hide);
+        //showIv = findViewById(R.id.main_password_show);
 
         hideIv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,ForgotPasswordActivity.class);
+                Intent intent = new Intent(MainActivity.this,ForgotpasswordActivity.class);
                 startActivity(intent);
             }
         });
