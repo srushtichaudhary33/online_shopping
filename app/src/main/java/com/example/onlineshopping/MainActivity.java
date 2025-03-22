@@ -7,10 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,19 +26,24 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
-    EditText email, password;
     Button signin;
-    TextView forgotPassword, createAccount;
+    EditText email,password;
+    TextView forgotPassword,createAccount;
 
-    String EmailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
     SQLiteDatabase db;
+
+    ImageView hideIv,showIv;
+
     SharedPreferences sp;
-
     ApiInterface apiInterface;
-
     ProgressDialog pd;
 
     @Override
@@ -50,33 +57,48 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        // Initialize the database
-        db = openOrCreateDatabase("AndroidOnlineShopping.db", MODE_PRIVATE, null);
-        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS(USERID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(50), EMAIL VARCHAR(50), CONTACT BIGINT(10), PASSWORD VARCHAR(20))";
+        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
+
+        db = openOrCreateDatabase("AndroidOnlineShopping.db",MODE_PRIVATE,null);
+        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS(USERID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(50),EMAIL VARCHAR(50),CONTACT BIGINT(10),PASSWORD VARCHAR(20))";
         db.execSQL(tableQuery);
 
-        // Initialize SharedPreferences
-        sp = getSharedPreferences(ConstantSp.PREF, MODE_PRIVATE);
-
-        // Check if the user is already logged in
-        if (!sp.getString(ConstantSp.USERID, "").isEmpty()) {
-            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
-        // Initialize views
+        signin = findViewById(R.id.main_signin);
         email = findViewById(R.id.main_email);
         password = findViewById(R.id.main_password);
-        signin = findViewById(R.id.main_signin);
+
+        hideIv = findViewById(R.id.main_password_hide);
+        showIv = findViewById(R.id.main_password_show);
+
+        hideIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideIv.setVisibility(View.GONE);
+                showIv.setVisibility(View.VISIBLE);
+
+                password.setTransformationMethod(null);
+
+            }
+        });
+
+        showIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideIv.setVisibility(View.VISIBLE);
+                showIv.setVisibility(View.GONE);
+
+                password.setTransformationMethod(new PasswordTransformationMethod());
+
+            }
+        });
+
         forgotPassword = findViewById(R.id.main_forgot_password);
         createAccount = findViewById(R.id.main_create_account);
 
-        // Set click listeners
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ForgotpasswordActivity.class);
+                Intent intent = new Intent(MainActivity.this,ForgotPasswordActivity.class);
                 startActivity(intent);
             }
         });
@@ -84,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
+                Intent intent = new Intent(MainActivity.this,SignupActivity.class);
                 startActivity(intent);
             }
         });
@@ -92,16 +114,19 @@ public class MainActivity extends AppCompatActivity {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Validate input
-                if (email.getText().toString().trim().equals("")) {
-                    email.setError("Email ID Required");
-                } else if (!email.getText().toString().trim().matches(EmailPattern)) {
-                    email.setError("Valid Email ID Required");
-                } else if (password.getText().toString().trim().equals("")) {
+                if(email.getText().toString().trim().equals("")){
+                    email.setError("Email Id Required");
+                }
+                else if(!email.getText().toString().trim().matches(emailPattern)){
+                    email.setError("Valid Email Id Required");
+                }
+                else if(password.getText().toString().trim().equals("")){
                     password.setError("Password Required");
-                } else if (password.getText().toString().trim().length() < 6) {
+                }
+                else if(password.getText().toString().trim().length()<6){
                     password.setError("Min. 6 Char Password Required");
-                } else {
+                }
+                else {
                     //doLoginSqlite(view);
                     if(new ConnectionDetector(MainActivity.this).networkConnected()){
                         //new doLogin().execute();

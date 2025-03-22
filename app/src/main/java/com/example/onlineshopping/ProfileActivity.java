@@ -23,17 +23,20 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ProfileActivity extends AppCompatActivity {
 
     EditText name,contact,email,password,confirmpassword;
     Button edit,submit;
 
-    String EmailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
     SQLiteDatabase db;
     SharedPreferences sp;
     ApiInterface apiInterface;
-
     ProgressDialog pd;
 
     @Override
@@ -41,15 +44,14 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
-
-        db = openOrCreateDatabase("AndroidOnlineShopping.db", MODE_PRIVATE, null);
+        db = openOrCreateDatabase("AndroidOnlineShopping.db",MODE_PRIVATE,null);
         String tableQuery = "CREATE TABLE IF NOT EXISTS USERS(USERID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(50),EMAIL VARCHAR(50),CONTACT BIGINT(10),PASSWORD VARCHAR(20))";
         db.execSQL(tableQuery);
 
@@ -75,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
                 else if(email.getText().toString().trim().equals("")){
                     email.setError("Email Id Required");
                 }
-                else if(!email.getText().toString().trim().matches(EmailPattern)){
+                else if(!email.getText().toString().trim().matches(emailPattern)){
                     email.setError("Valid Email Id Required");
                 }
                 else if(password.getText().toString().trim().equals("")){
