@@ -7,7 +7,6 @@ public class ConstantSp {
         public static final String LOGIN_URL = BASE_URL+"login.php";
         public static final String UPDATE_PROFILE_URL = BASE_URL+"update_profile.php";
         public static final String DELETE_PROFILE_URL = BASE_URL+"delete_profile.php";
-
         public static final String PREF = "pref";
 
         public static final String USERID = "userid";

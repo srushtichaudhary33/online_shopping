@@ -23,16 +23,6 @@ public class SplashActivity extends AppCompatActivity {
 
     SQLiteDatabase db;
 
-//    int[] productIdArray = {1,2,3,4};
-//    int[] productSubCatIdArray = {3,3,5,5};
-//    String[] productNameArray = { "Asoit01", "Asoit02", "Sou01", "Sou02"};
-//    String[] productPriceArray = { "250", "350", "200", "300"};
-//    int[] productImageArray = { R.drawable.asoit01, R.drawable.asoit02, R.drawable.sou01, R.drawable.sou02};
-//    String[] escArray = {
-//            " A digital platform for easy access to e-books and online resources." ,
-//            " A versatile platform for managing, accessing, and borrowing library resources efficiently."
-//    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
