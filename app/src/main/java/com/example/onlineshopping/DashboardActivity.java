@@ -25,18 +25,27 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DashboardActivity extends AppCompatActivity {
 
     TextView welcome;
-    Button profile, delete, logout, category, wishlist, cart, myorder ;
+    Button profile, delete, logout,category,wishlist,cart,myorder,activityToFragment,tabDemo,bottomNav,navigationDemo;
 
     SharedPreferences sp;
     SQLiteDatabase db;
+    ApiInterface apiInterface;
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }

@@ -35,10 +35,20 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase db;
     SharedPreferences sp;
 
+    ApiInterface apiInterface;
+
+    ProgressDialog pd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         // Initialize the database
         db = openOrCreateDatabase("AndroidOnlineShopping.db", MODE_PRIVATE, null);

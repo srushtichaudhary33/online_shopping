@@ -9,7 +9,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("signup.php")
-    Call<GetSignupData> doSignupData(
+    Call<GetSignupData> doSignupData (
             @Field("name") String name,
             @Field("email") String email,
             @Field("contact") String contact,

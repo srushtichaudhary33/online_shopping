@@ -32,11 +32,17 @@ public class ProfileActivity extends AppCompatActivity {
 
     SQLiteDatabase db;
     SharedPreferences sp;
+    ApiInterface apiInterface;
+
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }

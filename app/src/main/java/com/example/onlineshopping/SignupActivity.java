@@ -23,25 +23,36 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SignupActivity extends AppCompatActivity {
 
     EditText name,contact,email,password,confirmpassword;
     Button submit;
     TextView alreadyAccount;
 
-    String EmailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
     SQLiteDatabase db;
+    ApiInterface apiInterface;
+
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        db = openOrCreateDatabase("AndroidOnlineShopping.db", MODE_PRIVATE, null);
-        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS(USERID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(50), EMAIL VARCHAR(50), CONTACT BIGINT(10), PASSWORD VARCHAR(20))";
+
+        db = openOrCreateDatabase("AndroidOnlineShopping.db",MODE_PRIVATE,null);
+        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS(USERID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(50),EMAIL VARCHAR(50),CONTACT BIGINT(10),PASSWORD VARCHAR(20))";
         db.execSQL(tableQuery);
 
         name = findViewById(R.id.signup_name);
@@ -62,28 +73,36 @@ public class SignupActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (name.getText().toString().trim().equals("")){
+                if(name.getText().toString().trim().equals("")){
                     name.setError("Name Required");
-                } else if(contact.getText().toString().trim().equals("")) {
+                }else if(contact.getText().toString().trim().equals("")){
                     contact.setError("Contact No. Required");
-                } else if (contact.getText().toString().trim().length()<10) {
-                    contact.setError("Valid Contact No. Required");
-                } else if (email.getText().toString().trim().equals("")) {
-                    email.setError("Email Id Required");
-                } else if (!email.getText().toString().trim().matches(EmailPattern)) {
-                    email.setError("Valid Email Id Required");
-                } else if (password.getText().toString().trim().equals("")) {
-                    password.setError("Password Required");
-                } else if (password.getText().toString().trim().length()<6) {
-                    password.setError("Min. 6 Char Password Required");
                 }
-                else if (confirmpassword.getText().toString().trim().equals("")) {
+                else if(contact.getText().toString().trim().length()<10){
+                    contact.setError("Valid Contact No. Required");
+                }
+                else if(email.getText().toString().trim().equals("")){
+                    email.setError("Email Id Required");
+                }
+                else if(!email.getText().toString().trim().matches(emailPattern)){
+                    email.setError("Valid Email Id Required");
+                }
+                else if(password.getText().toString().trim().equals("")){
+                    password.setError("Password Required");
+                }
+                else if(password.getText().toString().trim().length()<6){
+                    password.setError("Min.6 Char Password Required");
+                }
+                else if(confirmpassword.getText().toString().trim().equals("")){
                     confirmpassword.setError("Confirm Password Required");
-                } else if (confirmpassword.getText().toString().trim().length()<6) {
-                    confirmpassword.setError("Min. 6 Char Confirm Password Required");
-                } else if (!password.getText().toString().trim().matches(confirmpassword.getText().toString().trim())) {
-                    confirmpassword.setError("Password Dose Not Match");
-                } else {
+                }
+                else if(confirmpassword.getText().toString().trim().length()<6){
+                    confirmpassword.setError("Min.6 Char Confirm Password Required");
+                }
+                else if(!password.getText().toString().trim().matches(confirmpassword.getText().toString().trim())){
+                    confirmpassword.setError("Password Does Not Match");
+                }
+                else{
                     //doSqliteSignup();
                     if(new ConnectionDetector(SignupActivity.this).networkConnected()){
                         //Toast.makeText(SignupActivity.this, "Internet/Wifi Connected", Toast.LENGTH_SHORT).show();
@@ -100,13 +119,14 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     private void doSignupRetrofit() {
-        Call<GetSignupData> call = apiInterface.doSignupData(name.getText().toString(),email.getText().toString(),contact.getText().toString(),password.getText().toString());
+        retrofit2.Call<GetSignupData> call = apiInterface.doSignupData(name.getText().toString(),email.getText().toString(),contact.getText().toString(),password.getText().toString());
         call.enqueue(new Callback<GetSignupData>() {
             @Override
-            public void onResponse(Call<GetSignupData> call, Response<GetSignupData> response) {
+            public void onResponse(retrofit2.Call<GetSignupData> call, Response<GetSignupData> response) {
                 pd.dismiss();
                 if(response.code()==200){
                     if(response.body().status){
