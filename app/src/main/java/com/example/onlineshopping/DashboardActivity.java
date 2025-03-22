@@ -68,15 +68,18 @@ public class DashboardActivity extends AppCompatActivity {
         tabDemo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this, TabDemoActivity.class);
+//                Intent intent = new Intent(DashboardActivity.this, TabDemoActivity.class);
+//                startActivity(intent);
+                Intent intent = new Intent(DashboardActivity.this, com.example.onlineshopping.TabDemoActivity.class);
                 startActivity(intent);
+
             }
         });
 
         activityToFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this,ActivityToFragmentActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, com.example.onlineshopping.ActivityToFragmentActivity.class);
                 startActivity(intent);
             }
         });

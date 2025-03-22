@@ -70,27 +70,27 @@ public class MainActivity extends AppCompatActivity {
         //hideIv = findViewById(R.id.main_password_hide);
         //showIv = findViewById(R.id.main_password_show);
 
-        hideIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideIv.setVisibility(View.GONE);
-                showIv.setVisibility(View.VISIBLE);
+//        hideIv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                hideIv.setVisibility(View.GONE);
+//                showIv.setVisibility(View.VISIBLE);
+//
+//                password.setTransformationMethod(null);
+//
+//            }
+//        });
 
-                password.setTransformationMethod(null);
-
-            }
-        });
-
-        showIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideIv.setVisibility(View.VISIBLE);
-                showIv.setVisibility(View.GONE);
-
-                password.setTransformationMethod(new PasswordTransformationMethod());
-
-            }
-        });
+//        showIv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                hideIv.setVisibility(View.VISIBLE);
+//                showIv.setVisibility(View.GONE);
+//
+//                password.setTransformationMethod(new PasswordTransformationMethod());
+//
+//            }
+//        });
 
         forgotPassword = findViewById(R.id.main_forgot_password);
         createAccount = findViewById(R.id.main_create_account);

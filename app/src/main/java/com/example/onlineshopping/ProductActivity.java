@@ -32,6 +32,10 @@ public class ProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
 
         db = openOrCreateDatabase("AndroidOnlineShopping.db",MODE_PRIVATE,null);

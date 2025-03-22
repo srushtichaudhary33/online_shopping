@@ -15,6 +15,14 @@
         android:theme="@style/Theme.OnlineShopping"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <activity
+            android:name=".ActivityToFragmentActivity" />
+
+        <activity
+            android:name=".TabDemoActivity" />
+
+
         <activity
             android:name=".OrderDetailActivity"
             android:exported="false" />
