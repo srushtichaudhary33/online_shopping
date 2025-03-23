@@ -49,6 +49,7 @@
             android:minLines="3" />
 
         <Spinner
+            android:textColor="@color/white"
             android:id="@+id/checkout_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,6 +65,7 @@
             android:orientation="horizontal">
 
             <RadioButton
+                android:textColor="@color/white"
                 android:id="@+id/checkout_cod"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,6 +73,7 @@
                 android:text="Cash On Delivery" />
 
             <RadioButton
+                android:textColor="@color/white"
                 android:id="@+id/checkout_online"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

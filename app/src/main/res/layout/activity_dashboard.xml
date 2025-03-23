@@ -10,6 +10,7 @@
     tools:context=".DashboardActivity">
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/dashboard_name"
         android:text="Welcome NAME"
         android:layout_marginTop="@dimen/_20sdp"

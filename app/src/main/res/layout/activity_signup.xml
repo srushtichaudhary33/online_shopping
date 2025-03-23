@@ -32,10 +32,11 @@
                     android:layout_marginTop="@dimen/_50sdp"
                     android:layout_gravity="center"
                     android:text="@string/create_account_title"
-                    android:textColor="@color/color_red"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:textColor="@color/white"
                     style="@style/text_14"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:textAlignment="center"
@@ -90,6 +91,7 @@
                     android:layout_marginTop="@dimen/_20sdp" />
 
                 <TextView
+                    android:textColor="@color/white"
                     android:id="@+id/signup_alredy_account"
                     style="@style/text_14"
                     android:layout_marginVertical="@dimen/_20sdp"
