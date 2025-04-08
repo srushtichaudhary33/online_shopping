@@ -16,6 +16,13 @@ lifecycleLivedataKtx = "2.8.4"
 lifecycleViewmodelKtx = "2.8.4"
 navigationFragment = "2.7.7"
 navigationUi = "2.7.7"
+circleimage = "3.1.0"
+fishbun = "1.1.1"
+coil = "0.11.0"
+razorpay = "1.6.20"
+firebase-bom = "32.7.4"
+firebase-messaging = "23.4.1"
+google-services = "4.4.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -33,6 +40,13 @@ lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-lived
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
+circleimage = { group = "de.hdodenhof" , name = "circleimageview" , version.ref = "circleimage"}
+fishbun = {group = "io.github.sangcomz", name = "fishbun", version.ref = "fishbun"}
+coil = {group="io.coil-kt", name="coil", version.ref="coil"}
+razorpay = {group="com.razorpay", name="checkout", version.ref = "razorpay"}
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebase-messaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

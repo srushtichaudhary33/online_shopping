@@ -30,5 +30,8 @@ public class GetLoginData {
         @SerializedName("contact")
         @Expose
         public String contact;
+        @SerializedName("profile")
+        @Expose
+        public String profile;
     }
 }

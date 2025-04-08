@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.razorpay.CheckoutActivity;
-
 import java.util.ArrayList;
 
 public class CartActivity extends AppCompatActivity {

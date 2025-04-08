@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     if(response.body().status){
                         Toast.makeText(MainActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                         for(int i=0;i<response.body().userDetails.size();i++){
+
                             sp.edit().putString(ConstantSp.USERID,response.body().userDetails.get(i).userid).commit();
                             sp.edit().putString(ConstantSp.NAME,response.body().userDetails.get(i).name).commit();
                             sp.edit().putString(ConstantSp.EMAIL,response.body().userDetails.get(i).email).commit();
